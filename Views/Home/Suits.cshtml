@@ -1,0 +1,74 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Suit</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
+    <style>
+        .闪耀{
+            background-color:gold;
+        }
+        .非凡{
+            background-color:silver;
+        }
+        .稀有{
+            background-color:rosybrown;
+        }
+        .清新{
+            border:2px solid green;
+        }
+        .典雅{
+            border:2px solid brown;
+        }
+        .性感{
+            border:2px solid purple;
+        }
+        .帅气{
+            border:2px solid blue;
+        }
+        .甜美{
+            border:2px solid pink;
+        }
+        .true{
+            color:red;
+        }
+    </style>
+</head>
+<body>
+    <div id="content">
+        <a href="/home/index">返回首页</a>
+        <div v-for="item in records">
+            <div v-bind:class="[item.grade,item.property]" style="margin:2px;">
+                -{{item.suit}}-{{item.grade}}-{{item.property}}-{{item.designer}}-
+                <div v-for="c in item.all">
+                    <span v-bind:class="c.isHave">{{c.type=='Card'?'卡片':'衣服'}}:{{c.name}}[{{c.part}}]{{c.isHave?"已拥有":""}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var records = { records: [] };
+        function record() {
+            $.ajax({
+                async: false,
+                url: '/record/suits',
+                success: function (res) {
+                    records.records = res;
+                }
+            })
+        }
+        record()
+        var v_content = new Vue({
+            el: "#content",
+            data: records
+        })
+    </script>
+</body>
+</html>

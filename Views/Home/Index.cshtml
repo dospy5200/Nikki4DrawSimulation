@@ -1,0 +1,81 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.min.js"></script>
+    <style>
+        #content {
+        }
+        .闪耀{
+            color:gold;
+        }
+        .非凡{
+            color:silver;
+        }
+        .稀有{
+            color:rosybrown;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="title">已抽{{times}}次 <a href="/home/suits">已拥有{{have}}/{{total}}</a></div>
+        <div id="content">
+            <div v-for="item in records">
+                <span v-bind:class="item.grade"><span style="color:red">{{item.isNew?'新！':''}}</span>获得{{item.name}}</span>
+            </div>
+        </div>
+        <div><button onclick="draw(1)">单抽</button><button onclick="draw(10)">十连</button></div>
+    </div>
+    <script>
+        var data = { times: 0, have: 0, total: 0 };
+
+        function record() {
+            $.ajax({
+                async: false,
+                url: '/record/data',
+                success: function (res) {
+                    title = res;
+                }
+            })
+            return title;
+        }
+        record();
+        
+        var v_title = new Vue({
+	        el   : "#title",
+            data: title
+        });
+
+        var records = { records: [] };
+        var v_content = new Vue({
+            el: "#content",
+            data: records
+        })
+        function draw(times) {
+            $.ajax({
+                async: false,
+                url: '/draw/combo/?times=' + times,
+                success: function (res) {
+                    records = res;
+                    v_content.records = res;
+                    var title = record();
+                    v_title.times = title.times;
+                    v_title.have = title.have;
+                    if (title.have == title.total) {
+                        alert(title.times + "抽穿阁啦！");
+                    }
+                }
+            })
+        }
+    </script>
+</body>
+</html>
